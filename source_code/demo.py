@@ -1,6 +1,9 @@
+import argparse
+import skimage.io
+import matplotlib.pyplot as plt
+
 import EMR
 import LMR
-import argparse
 
 
 def parser_arguments():
@@ -22,18 +25,26 @@ if __name__ == '__main__':
 
     method = parser_arguments()
 
-    image_path = 'Assets/Sample/peppers.pgm'
+    image_path = 'assets/images/baboon.pgm'
+    img = skimage.io.imread(image_path)
 
     if method == 'EMR':
-        content_owner = EMR.ContentOwner()
-        data_hider = EMR.DataHider()
-        recipient = EMR.Recipient()
+        content_owner = EMR.EMRContentOwner()
+        data_hider = EMR.EMRDataHider()
+        recipient = EMR.EMRRecipient()
     elif method == 'LMR':
-        content_owner = LMR.ContentOwner()
-        data_hider = LMR.DataHider()
-        recipient = LMR.Recipient()
+        content_owner = LMR.LMRContentOwner()
+        data_hider = LMR.LMRDataHider()
+        recipient = LMR.LMRRecipient()
 
-    # Perform the corresponding method
-    output = content_owner.preprocess_image(image_path)
-    # output = dh.asdf(output)
-    # final_output = rp.asdf(output)
+    # Perform the corresponding method based on the user input
+    # Construct the RRBE scheme
+    encoded_img, secret_key, msb = content_owner.encode_image(img).values()
+    marked_encoded_img, msb = data_hider.hiding_data(encoded_img, msb).values()
+    message = recipient.extract_message(marked_encoded_img, msb)
+    recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
+
+    # Show the recovered image
+    plt.imshow(recovered_img)
+    plt.show()
+    

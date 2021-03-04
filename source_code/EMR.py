@@ -1,14 +1,11 @@
 import os
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import skimage
 import skimage.io
 import PIL
 
 import entity
 import utils
-import random
 
 class EMRContentOwner(entity.ContentOwner):
 
@@ -115,25 +112,5 @@ class EMRRecipient(entity.Recipient):
         info = ((img[lm == 0] & template) >> (8 - msb)) << (8 - msb)
 
         return info
-
-if __name__ == '__main__':
-
-    # Initializing all the participants
-    co = EMRContentOwner()
-    dh = EMRDataHider()
-    rp = EMRRecipient()
-
-    # Load test image and create random encryption key
-    img = skimage.io.imread(os.path.dirname(os.path.abspath(__file__)) + '/assets/images/lena.pgm')
-    
-    # Construct the RRBE scheme
-    encoded_img, secret_key, msb = co.encode_image(img).values()
-    marked_encoded_img, msb = dh.hiding_data(encoded_img, msb).values()
-    message = rp.extract_message(marked_encoded_img, msb)
-    recovered_img = rp.recover_image(marked_encoded_img, secret_key, msb)
-
-    # Show the recovered image
-    plt.imshow(recovered_img)
-    plt.show()
 
 
