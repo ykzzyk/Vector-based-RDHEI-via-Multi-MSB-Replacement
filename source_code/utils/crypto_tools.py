@@ -19,6 +19,7 @@ def generate_secret_key(img_h: int, img_w: int) -> np.ndarray:
 
     # Reshape the 1D secret key to match the image
     secret_key = secret_key.reshape((img_h, img_w))
+
     
     return secret_key
 

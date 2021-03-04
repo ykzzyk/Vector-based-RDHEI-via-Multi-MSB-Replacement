@@ -2,32 +2,14 @@ import abc
 import numpy as np
 
 # Local imports
-import new_utility as utils
+import utils
 
 # This code should reflect the global scheme of the EMR and LMR
 
 class ContentOwner(abc.ABC):
-    
-    def encode(self, img: np.ndarray, secret_key: np.ndarray) -> np.ndarray:
-        
-        # Map generation
-        generated_maps = self.map_generation(img)
-
-        # Encryption
-        encrypted_img = utils.encrypt_img(img, secret_key)
-
-        # Map Embedding
-        encoded_img = self.embed_img(encrypted_img, generated_maps)
-
-        # Returning encoded (encrypted and embedded) image 
-        return encoded_img
 
     @abc.abstractmethod
-    def map_generation(self, img: np.ndarray) -> dict:
-        ...
-
-    @abc.abstractmethod
-    def embed_img(self, img: np.ndarray, maps: dict) -> np.ndarray:
+    def encode_image(self, img: np.ndarray) -> dict:
         ...
 
     def generate_location_map(self, img: np.ndarray, msb: np.ndarray) -> np.ndarray:
@@ -67,51 +49,24 @@ class ContentOwner(abc.ABC):
         # Calculate the bpp for all and select the best
         bpps = (msb / (h * w)) * np.sum(lms == 0, axis=(1,2))
         max_index = np.argmax(bpps)
-        #max_bpp = bpps[max_index]
-        #max_msb = msb[max_index]
+        max_bpp = bpps[max_index]
+        max_msb = msb[max_index]
         max_lm = lms[max_index]
 
-        return max_lm
-
-    def original_generate_location_map(self, img, msb):
-        """RRBE Schema: Process Image to reserve room for data hiding"""
-        h, w = img.shape
-
-        # Generate template
-        template = ((1 << msb) - 1) << (8 - msb)
-
-        # Create location map
-        lm = np.zeros_like(img, dtype='uint8')
-
-        # Image processing
-        for i in range(h):
-            for j in range(w):
-                if i == 0 and j == 0:
-                    # Mark the first pixel in the location map: "1"
-                    lm[i, j] = 1
-                    mark = img[i, j]
-                    continue
-                # MSB doesn't match
-                if img[i, j] & template != mark & template:
-                    # Mark the pixels in the location map: "1"
-                    lm[i, j] = 1
-                    mark = img[i, j]
-
-        # Return location map
-        return lm
+        return max_lm, max_msb
     
 class DataHider(abc.ABC):
     
     @abc.abstractmethod
-    def hiding_data(self, img: np.ndarray) -> np.ndarray:
+    def hiding_data(self, img: np.ndarray, msb: int) -> np.ndarray:
         ...
     
 class Recipient(abc.ABC):
     
     @abc.abstractmethod
-    def recover_image(self, img: np.ndarray) -> np.ndarray:
+    def recover_image(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
         ...
           
     @abc.abstractmethod
-    def extract_message(self, img: np.ndarray) -> np.ndarray:
+    def extract_message(self, img: np.ndarray, msb: int) -> np.ndarray:
         ...
