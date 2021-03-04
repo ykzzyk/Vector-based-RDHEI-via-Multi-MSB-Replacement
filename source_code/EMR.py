@@ -34,7 +34,7 @@ class EMRContentOwner(entity.ContentOwner):
             img = utils.block_shuffle.block_shuffle(img, secret_key, block_size) # Rotate the image
 
         # encrypt the image based on the generated secret key
-        img = utils.crypto_tools.encrypt_img(img, secret_key)
+        img = np.bitwise_xor(img, secret_key)
 
         # Embed the location map into the encrypted image
         img[lm == 1] = np.bitwise_or(lm, img)[lm == 1]
@@ -59,7 +59,6 @@ class EMRDataHider(entity.DataHider):
         np.random.seed(1)
         img[lm == 0] &= (1 << (8 - msb)) - 1
         info = np.random.randint(0, (1 << msb) - 1, size=np.sum(lm == 0)) << (8 - msb)
-        print(info)
         img[lm == 0] |= info
 
         return {'marked_encrypted_img': img, 'msb': msb}
@@ -114,7 +113,6 @@ class EMRRecipient(entity.Recipient):
 
         # Extract the information from the marked image
         info = ((img[lm == 0] & template) >> (8 - msb)) << (8 - msb)
-        print(info)
 
         return info
 
@@ -134,6 +132,7 @@ if __name__ == '__main__':
     message = rp.extract_message(marked_encoded_img, msb)
     recovered_img = rp.recover_image(marked_encoded_img, secret_key, msb)
 
+    # Show the recovered image
     plt.imshow(recovered_img)
     plt.show()
 

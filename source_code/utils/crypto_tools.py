@@ -19,15 +19,5 @@ def generate_secret_key(img_h: int, img_w: int) -> np.ndarray:
 
     # Reshape the 1D secret key to match the image
     secret_key = secret_key.reshape((img_h, img_w))
-
     
     return secret_key
-
-def encrypt_img(img: np.ndarray, secret_key: np.ndarray) -> np.ndarray:
-    # Inspired from this StackOverflow forum
-    # https://stackoverflow.com/a/20937265
-    
-    """Image Encryption"""
-    encrypted_img = np.bitwise_xor(img, secret_key)
-
-    return encrypted_img
