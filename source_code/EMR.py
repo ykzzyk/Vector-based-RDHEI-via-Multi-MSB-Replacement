@@ -14,15 +14,12 @@ class EMRContentOwner(entity.ContentOwner):
     def __init__(self):
         super(EMRContentOwner, self).__init__()
 
-    def encode_image(self, img: np.ndarray) -> dict:
+    def encode_image(self, img: np.ndarray, secret_key: np.ndarray) -> dict:
 
         h, w = img.shape
         
         # Construct the best location map
         lm, msb = self.generate_location_map(img, self.MSBS)
-
-        # Generate the secret key
-        secret_key = utils.crypto_tools.generate_secret_key(*img.shape)
     
         # shuffle the location map based on the generated key
         block_sizes = [2,4,16,32,64,128,256,512]
@@ -38,7 +35,7 @@ class EMRContentOwner(entity.ContentOwner):
         img[lm == 0] = np.bitwise_and((lm == 0) * 1 * 0xfe, img)[lm == 0]
 
 
-        return {'encrypted_img': img, 'secret_key': secret_key, 'msb': msb}
+        return {'encrypted_img': img, 'msb': msb}
         
 
         

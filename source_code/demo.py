@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 import EMR
 import LMR
+import utils
 
 
 def parser_arguments():
@@ -39,7 +40,10 @@ if __name__ == '__main__':
 
     # Perform the corresponding method based on the user input
     # Construct the RRBE scheme
-    encoded_img, secret_key, msb = content_owner.encode_image(img).values()
+    # Generate the secret key
+    secret_key = utils.crypto_tools.generate_secret_key(*img.shape)
+
+    encoded_img, msb = content_owner.encode_image(img, secret_key).values()
     marked_encoded_img, msb = data_hider.hiding_data(encoded_img, msb).values()
     message = recipient.extract_message(marked_encoded_img, msb)
     recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
