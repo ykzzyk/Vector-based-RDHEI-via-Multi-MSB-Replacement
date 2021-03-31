@@ -1,6 +1,7 @@
 import argparse
 import skimage.io
 import matplotlib.pyplot as plt
+from skimage import metrics
 
 import EMR
 import LMR
@@ -26,8 +27,9 @@ if __name__ == '__main__':
 
     method = parser_arguments()
 
-    image_path = 'assets/images/baboon.pgm'
+    image_path = 'assets/images/lena.pgm'
     img = skimage.io.imread(image_path)
+    original_img = img.copy()
 
     if method == 'EMR':
         content_owner = EMR.EMRContentOwner()
@@ -47,8 +49,11 @@ if __name__ == '__main__':
     marked_encoded_img, msb = data_hider.hiding_data(encoded_img, msb).values()
     message = recipient.extract_message(marked_encoded_img, msb)
     recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
-
-    # Show the recovered image
-    plt.imshow(recovered_img)
-    plt.show()
     
+    # Caculate the PSNR
+    psnr = metrics.peak_signal_noise_ratio(original_img, recovered_img, data_range=None)
+    print(f"The Peak Signal-to-Noise Ratio is: {psnr}")
+    
+    # Calculate the SSIM
+    ssim = metrics.structural_similarity(original_img, recovered_img, data_range=recovered_img)
+    print(f"The Structural SIMilarity is: {ssim}")

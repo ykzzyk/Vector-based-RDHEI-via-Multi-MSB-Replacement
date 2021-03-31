@@ -22,7 +22,7 @@ class EMRContentOwner(entity.ContentOwner):
         lm, msb = self.generate_location_map(img, self.MSBS)
     
         # shuffle the location map based on the generated key
-        block_sizes = [2,4,16,32,64,128,256,512]
+        block_sizes = [2,4,8,16,32,64,128,256,512]
         for block_size in block_sizes:
             lm = utils.block_shuffle.block_shuffle(lm, secret_key, block_size) # Rotate the location map
             img = utils.block_shuffle.block_shuffle(img, secret_key, block_size) # Rotate the image
@@ -74,9 +74,9 @@ class EMRRecipient(entity.Recipient):
         img ^= secret_key
 
         # Rotate the location map
-        block_sizes = [512, 256, 128, 64, 32, 16, 4, 2]
+        block_sizes = [512, 256, 128, 64, 32, 16, 8, 4, 2]
 
-        # shuffle the location map based on the generated key
+        # shuffle the location map and marked decrypted image based on the generated key
         for block_size in block_sizes:
             lm = utils.block_shuffle.block_shuffle(lm, secret_key, block_size, encrypt=False) # Rotate the location map
             img = utils.block_shuffle.block_shuffle(img, secret_key, block_size, encrypt=False) # Rotate the image
@@ -105,9 +105,12 @@ class EMRRecipient(entity.Recipient):
 
         np.random.seed(1)
 
-        # Extract the information from the marked image
+        # Extract the information from the marked encrypted image
         info = ((img[lm == 0] & template) >> (8 - msb)) << (8 - msb)
 
         return info
 
-
+# Automation 100000 tests
+if __name__ == '__main__':
+    pass
+    
