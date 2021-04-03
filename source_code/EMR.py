@@ -53,23 +53,16 @@ class EMRDataHider(entity.DataHider):
         # hide the secret information into the encrypted image
         np.random.seed(1)
         img[lm == 0] &= (1 << (8 - msb)) - 1
-        info = np.random.randint(0, (1 << msb) - 1, size=np.sum(lm == 0)) << (8 - msb)
+        info = np.random.randint(0, (1 << msb) - 1, size=np.sum(lm == 0)) # Generate random information
         
+        shifted_info = info << (8 - msb) # Shift the information bits to preserve the rest bits' values
         
-        
-        
-        
-        
-        origianl_info = info.copy()
-        
-        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(info), msb)
-        info = np.bitwise_xor(info, secret_key_2)
-        
-        print(secret_key_2)
-        print(info)
-        img[lm == 0] |= info
+        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(shifted_info), msb)
+        shifted_info = np.bitwise_xor(shifted_info, secret_key_2)
+  
+        img[lm == 0] |= shifted_info
 
-        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'original_info': origianl_info}
+        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'info': info}
         
     
 class EMRRecipient(entity.Recipient):
@@ -120,9 +113,9 @@ class EMRRecipient(entity.Recipient):
         np.random.seed(1)
 
         # Extract the information from the marked encrypted image
-        info = ((img[lm == 0] & template) >> (8 - msb)) << (8 - msb)
+        info = (img[lm == 0] & template) >> (8 - msb) << (8 - msb)
         
-        info = np.bitwise_xor(info, secret_key)
+        info = np.bitwise_xor(info, secret_key) >> (8 - msb)
 
         return info
 

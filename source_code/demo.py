@@ -57,14 +57,18 @@ if __name__ == '__main__':
     original_img = img.copy()
     h, w = original_img.shape
 
-    if method == 'EMR':
-        content_owner = EMR.EMRContentOwner()
-        data_hider = EMR.EMRDataHider()
-        recipient = EMR.EMRRecipient()
-    elif method == 'LMR':
-        content_owner = LMR.LMRContentOwner()
-        data_hider = LMR.LMRDataHider()
-        recipient = LMR.LMRRecipient()
+    # if method == 'EMR':
+    #     content_owner = EMR.EMRContentOwner()
+    #     data_hider = EMR.EMRDataHider()
+    #     recipient = EMR.EMRRecipient()
+    # elif method == 'LMR':
+    #     content_owner = LMR.LMRContentOwner()
+    #     data_hider = LMR.LMRDataHider()
+    #     recipient = LMR.LMRRecipient()
+    
+    content_owner = EMR.EMRContentOwner()
+    data_hider = EMR.EMRDataHider()
+    recipient = EMR.EMRRecipient()
     
     # Perform the corresponding method based on the user input
     # Construct the RRBE scheme
