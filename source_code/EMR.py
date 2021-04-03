@@ -119,7 +119,4 @@ class EMRRecipient(entity.Recipient):
 
         return info
 
-# Automation 100000 tests
-if __name__ == '__main__':
-    pass
     

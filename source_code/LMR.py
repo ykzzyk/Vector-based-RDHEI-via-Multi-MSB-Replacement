@@ -111,19 +111,18 @@ class LMRDataHider(entity.DataHider):
         template = int('1' + '0' * offset + '1' * (7 - offset), 2)
         
         # Creating the info based on the offset
-        info = np.random.randint(0, (1 << offset), size=np.sum(lm==0)) << (7 - offset) # Embed random generated information bits; Shift the information bits to preserve the rest bits' values
-        original_info = info.copy()
+        info = np.random.randint(0, (1 << offset), size=np.sum(lm==0)) # Generate random generated information bits
         
-        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(info), msb, emr=False)
-        print(secret_key_2[:10])
-        info = np.bitwise_xor(info, secret_key_2)
-        print(info[:10])
+        shifted_info = info << (7 - offset) #  Shift the information bits to preserve the rest bits' values
+        
+        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(shifted_info), msb, emr=False)
+        shifted_info = np.bitwise_xor(shifted_info, secret_key_2)
         
         # Applying the template and info when the location map == 0
         img[lm == 0] &= template # Clear the most siginificant bits, except the first most siginificant bits
-        img[lm == 0] |= info # Do a bitwise OR operation to add the info bits
+        img[lm == 0] |= shifted_info # Do a bitwise OR operation to add the info bits
         
-        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'original_info': original_info}
+        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'info': info}
 class LMRRecipient(entity.Recipient):
     
     def __init__(self):
@@ -217,9 +216,7 @@ class LMRRecipient(entity.Recipient):
         # Extract the information from the marked encrypted image
         info = ((img[lm == 0] | template) & 127) >> (7 - offset) << (7 - offset)
         
-        
-        info = np.bitwise_xor(info, secret_key)
-        print(info[:10])
+        info = np.bitwise_xor(info, secret_key) >> (7 - offset)
         
         return info
         
