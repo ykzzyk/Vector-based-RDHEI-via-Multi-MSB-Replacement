@@ -28,6 +28,7 @@ class LMRContentOwner(entity.ContentOwner):
         if msb:
             # encrypt the rotated image based on the generated secret key
             img = np.bitwise_xor(img, secret_key)
+            encrypt_img = img.copy()
             
             compressed_lm = open('assets/temp/lm_map.jbg', 'rb').read()
             compressed_lm_bits = bin(int.from_bytes(compressed_lm, byteorder=sys.byteorder))[2:]
@@ -70,7 +71,7 @@ class LMRContentOwner(entity.ContentOwner):
             # Restore the original shape of the image after it was flattened
             img = img.reshape((h,w))
             
-            return {'encrypted_img': img, 'msb': msb}
+            return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb}
             
         else:
             return {}
@@ -110,14 +111,19 @@ class LMRDataHider(entity.DataHider):
         template = int('1' + '0' * offset + '1' * (7 - offset), 2)
         
         # Creating the info based on the offset
-        info = np.random.randint(0, (1 << offset), size=np.sum(lm==0)) # Embed random generated information bits
-        shift_info = info << (7 - offset) # Shift the information bits to preserve the rest bits' values
+        info = np.random.randint(0, (1 << offset), size=np.sum(lm==0)) << (7 - offset) # Embed random generated information bits; Shift the information bits to preserve the rest bits' values
+        original_info = info.copy()
+        
+        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(info), msb, emr=False)
+        print(secret_key_2[:10])
+        info = np.bitwise_xor(info, secret_key_2)
+        print(info[:10])
         
         # Applying the template and info when the location map == 0
         img[lm == 0] &= template # Clear the most siginificant bits, except the first most siginificant bits
-        img[lm == 0] |= shift_info # Do a bitwise OR operation to add the info bits
+        img[lm == 0] |= info # Do a bitwise OR operation to add the info bits
         
-        return {'marked_encrypted_img': img, 'msb': msb}
+        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'original_info': original_info}
 class LMRRecipient(entity.Recipient):
     
     def __init__(self):
@@ -177,12 +183,12 @@ class LMRRecipient(entity.Recipient):
 
             mark[lm[:, i] == 1] = img[lm[:, i] == 1, i] & template
             img[lm[:, i] == 0, i] &= ((1 << (8 - msb)) - 1)
-            img[lm[:, i] == 0, i] |= mark[lm[:, i] == 0]
-
+            img[lm[:, i] == 0, i] |= mark[lm[:, i] == 0] 
+        
         return img
         
     
-    def extract_message(self, img: np.ndarray, msb: int) -> np.ndarray:
+    def extract_message(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
         # extract the location map size
         lm_size = int("".join(np.array((img.flatten()[-18:] & 0x80) % 127, dtype=str)), 2)
                            
@@ -209,7 +215,11 @@ class LMRRecipient(entity.Recipient):
         template = int('1' + '0' * offset + '1' * (7 - offset), 2)
         
         # Extract the information from the marked encrypted image
-        info = ((img[lm == 0] | template) & 127) >> (7 - offset)
+        info = ((img[lm == 0] | template) & 127) >> (7 - offset) << (7 - offset)
+        
+        
+        info = np.bitwise_xor(info, secret_key)
+        print(info[:10])
         
         return info
         
@@ -219,7 +229,7 @@ if __name__ == "__main__":
     img = skimage.io.imread('assets/images/lena.pgm')
     original_img = img.copy()
     
-    secret_key = utils.crypto_tools.generate_secret_key(*img.shape)
+    secret_key = utils.crypto_tools.generate_secret_key_1(*img.shape)
     
     co = LMRContentOwner()
     encrypted_image, msb = co.encode_image(img, secret_key).values()

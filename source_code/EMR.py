@@ -29,13 +29,14 @@ class EMRContentOwner(entity.ContentOwner):
 
         # encrypt the image based on the generated secret key
         img = np.bitwise_xor(img, secret_key)
+        encrypt_img = img.copy()
 
         # Embed the location map into the encrypted image
         img[lm == 1] = np.bitwise_or(lm, img)[lm == 1]
         img[lm == 0] = np.bitwise_and((lm == 0) * 1 * 0xfe, img)[lm == 0]
 
 
-        return {'encrypted_img': img, 'msb': msb}
+        return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb}
         
 
         
@@ -53,9 +54,22 @@ class EMRDataHider(entity.DataHider):
         np.random.seed(1)
         img[lm == 0] &= (1 << (8 - msb)) - 1
         info = np.random.randint(0, (1 << msb) - 1, size=np.sum(lm == 0)) << (8 - msb)
+        
+        
+        
+        
+        
+        
+        origianl_info = info.copy()
+        
+        secret_key_2 = utils.crypto_tools.generate_secret_key_2(len(info), msb)
+        info = np.bitwise_xor(info, secret_key_2)
+        
+        print(secret_key_2)
+        print(info)
         img[lm == 0] |= info
 
-        return {'marked_encrypted_img': img, 'msb': msb}
+        return {'marked_encrypted_img': img, 'secret_key_2': secret_key_2, 'msb': msb, 'original_info': origianl_info}
         
     
 class EMRRecipient(entity.Recipient):
@@ -93,10 +107,10 @@ class EMRRecipient(entity.Recipient):
             mark[lm[:, i] == 1] = img[lm[:, i] == 1, i] & template
             img[lm[:, i] == 0, i] &= ((1 << (8 - msb)) - 1)
             img[lm[:, i] == 0, i] |= mark[lm[:, i] == 0]
-
+            
         return img
 
-    def extract_message(self, img: np.ndarray, msb: int) -> np.ndarray:
+    def extract_message(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
 
         # Extract the location map
         lm = np.bitwise_and(1, img)
@@ -107,6 +121,8 @@ class EMRRecipient(entity.Recipient):
 
         # Extract the information from the marked encrypted image
         info = ((img[lm == 0] & template) >> (8 - msb)) << (8 - msb)
+        
+        info = np.bitwise_xor(info, secret_key)
 
         return info
 

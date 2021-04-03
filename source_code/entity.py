@@ -124,11 +124,9 @@ class ContentOwner(abc.ABC):
                 if bpps.shape[0] == 7:
                     msb_map = utils.block_shuffle.block_shuffle(msb_map, secret_key, block_size) # Rotate the msb map
                     rotated_img = utils.block_shuffle.block_shuffle(img, secret_key, block_size) # Rotate the original img
-            
             # Employ JBIG-KIT to compress the two maps - MSB_map, Location_map
             msb_map_str = str(msb_map.flatten()).replace('[', ' ').replace(']', ' ')
             max_lm_str = str(max_lm.flatten()).replace('[', ' ').replace(']', ' ')
-            
             with open(f'assets/temp/msb_map.pbm', 'w+') as f:
                 f.write(f'P1\n512\n512\n\n{msb_map_str}')
                 
