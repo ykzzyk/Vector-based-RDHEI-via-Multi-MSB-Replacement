@@ -52,7 +52,8 @@ class EMRDataHider(entity.DataHider):
 
         # hide the secret information into the encrypted image
         np.random.seed(1)
-        img[lm == 0] &= (1 << (8 - msb)) - 1
+        img[lm == 0] &= (1 << (8 - msb)) - 1 # Clear the b-MSB bits to hide the future message inside it
+        
         info = np.random.randint(0, (1 << msb) - 1, size=np.sum(lm == 0)) # Generate random information
         
         shifted_info = info << (8 - msb) # Shift the information bits to preserve the rest bits' values
