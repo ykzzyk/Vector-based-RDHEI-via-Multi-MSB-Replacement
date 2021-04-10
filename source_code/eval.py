@@ -5,6 +5,7 @@ from skimage import metrics
 import numpy as np
 import math
 from scipy.stats import chisquare
+import warnings
 
 import EMR
 import LMR
@@ -14,7 +15,7 @@ def shannon_entropy(img, h, w):
     _, counts = np.unique(img, return_counts=True)
     p = (counts / (h * w))
     p *= np.log2(p)
-    print(f"The Shannon Entropy is: {-np.sum(p)}")
+    return (-np.sum(p))
     
 def chi_square(img, h, w):
     _, counts = np.unique(img, return_counts=True)
@@ -23,7 +24,8 @@ def chi_square(img, h, w):
     temp = np.sum(np.power(prob, 2))
     
     x_2 = np.sqrt(256 * h * w * temp)
-    print(f"The chisquare is: {x_2}")
+    
+    return x_2
     
 def npcr(img1, img2, h, w):
     res = (np.count_nonzero(np.equal(img1, img2) == 0)) / (h * w)
@@ -43,20 +45,25 @@ def parser_arguments():
                         metavar='method',
                         type=str,
                         help="type 'EMR' or 'LMR'")
-    # parser.add_argument('image path', type=str, help='the test image path')
+    parser.add_argument('name', 
+                        metavar='name', 
+                        type=str, 
+                        help='The test image name')
 
     args = parser.parse_args()
-    return args.method.upper()
+    
+    return args.method.upper(), args.name
 
 
 if __name__ == '__main__':
 
-    method = parser_arguments()
+    method, name = parser_arguments()
+    
+    print(f"----- Test the image {name} -----\n")
 
-    image_path = 'assets/images/knight.pgm'
+    image_path = f'assets/images/{name}.pgm'
     img = skimage.io.imread(image_path)
-    original_img = img.copy()
-    h, w = original_img.shape
+    h, w = img.shape
 
     if method == 'EMR':
         content_owner = EMR.EMRContentOwner()
@@ -73,40 +80,65 @@ if __name__ == '__main__':
     secret_key = utils.crypto_tools.generate_secret_key_1(*img.shape)
 
     encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key).values()
-    psnr = metrics.peak_signal_noise_ratio(original_img, encrypt_img, data_range=None)
-    print(f"The Peak Signal-to-Noise Ratio between origianl image and encrypted image is: {psnr}")
     
     marked_encoded_img, secret_key_2, msb, info = data_hider.hiding_data(encoded_img, msb).values()
-    psnr = metrics.peak_signal_noise_ratio(original_img, marked_encoded_img, data_range=None)
-    print(f"The Peak Signal-to-Noise Ratio between origianl image and marked encrypted image is: {psnr}")
-    
+      
     message = recipient.extract_message(marked_encoded_img, secret_key_2, msb)
-    print((info == message).all())
+    print(f"\n----- Secret Information Extraction Phase -----\nIs it error-free? Answer: {(info == message).all()}")
     
     recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
     
-    # Caculate the PSNR
-    psnr = metrics.peak_signal_noise_ratio(original_img, recovered_img, data_range=None)
-    print(f"The Peak Signal-to-Noise Ratio is: {psnr}")
-    
-    # Calculate the SSIM
-    ssim = metrics.structural_similarity(original_img, recovered_img, data_range=recovered_img)
-    print(f"The Structural SIMilarity is: {ssim}")
+    print("\n----- Shannon Entropy Results -----")
     
     # Calculate the Shannon Entropy
-    shannon_entropy(encrypt_img, h, w)
-    chi_square(encrypt_img, h, w)
+    se = shannon_entropy(img, h, w)
+    print(f"The Shannon Entropy of the original image is: {se}")
+    se = shannon_entropy(encrypt_img, h, w)
+    print(f"The Shannon Entropy of the encrypted image is: {se}")
+    se = shannon_entropy(marked_encoded_img, h, w)
+    print(f"The Shannon Entropy of the marked encrypted image is: {se}")
     
-    shannon_entropy(marked_encoded_img, h, w)
-    chi_square(marked_encoded_img, h, w)
+    print("\n----- Chi Square Results -----")
     
-    n = npcr(original_img, encrypt_img, h, w)
+    # Calculate the Chi Square
+    cs = chi_square(img, h, w)
+    print(f"The chisquare of the original image is: {cs}") 
+    cs = chi_square(encrypt_img, h, w)
+    print(f"The chisquare of the encrypted image is: {cs}")
+    cs = chi_square(marked_encoded_img, h, w)
+    print(f"The chisquare of the marked encrypted image is: {cs}")
+    
+    print("\n----- NPCR Results -----")
+    
+    # Calculate the NPCR
+    n = npcr(img, encrypt_img, h, w)
     print(f'The NPCR between original image and encrypted image is: {n}')
-    u = uaci(original_img, encrypt_img, h, w)
-    print(f'The UACI between original image and encrypted image is: {u}')
-    
-    n = npcr(original_img, marked_encoded_img, h, w)
+    n = npcr(img, marked_encoded_img, h, w)
     print(f'The NPCR between original image and marked encrypted image is: {n}')
-    u = uaci(original_img, marked_encoded_img, h, w)
+    
+    print("\n----- UACI Results -----")
+    
+    # Calculate the UACI
+    u = uaci(img, encrypt_img, h, w)
+    print(f'The UACI between original image and encrypted image is: {u}')
+    u = uaci(img, marked_encoded_img, h, w)
     print(f'The UACI between original image and marked encrypted image is: {u}')
+    
+    print("\n----- PSNR Results -----")
+    
+    # Calculate the PSNR
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        psnr = metrics.peak_signal_noise_ratio(img, encrypt_img, data_range=None)
+        print(f"The Peak Signal-to-Noise Ratio between original image and encrypted image is: {psnr}")
+        psnr = metrics.peak_signal_noise_ratio(img, marked_encoded_img, data_range=None)
+        print(f"The Peak Signal-to-Noise Ratio between original image and marked encrypted image is: {psnr}")
+        psnr = metrics.peak_signal_noise_ratio(img, recovered_img, data_range=None)
+        print(f"The Peak Signal-to-Noise Ratio between original image and recovered image is: {psnr}")
+        
+    print("\n----- SSIM Results -----")
+    
+    # Calculate the SSIM
+    ssim = metrics.structural_similarity(img, recovered_img, data_range=recovered_img)
+    print(f"The Structural SIMilarity between original image and recovered image is: {ssim}\n")
     

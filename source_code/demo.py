@@ -29,8 +29,7 @@ if __name__ == '__main__':
 
     image_path = 'assets/images/lena.pgm'
     img = skimage.io.imread(image_path)
-    original_img = img.copy()
-    h, w = original_img.shape
+    h, w = img.shape
 
     if method == 'EMR':
         content_owner = EMR.EMRContentOwner()
@@ -48,18 +47,15 @@ if __name__ == '__main__':
     encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key).values()
     
     marked_encoded_img, secret_key_2, msb, info = data_hider.hiding_data(encoded_img, msb).values()
-    
-    plt.imshow(marked_encoded_img)
-    plt.show()
 
     message = recipient.extract_message(marked_encoded_img, secret_key_2, msb)
     print((info == message).all())
     
     recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
     
-    fig = plt.figure(1)
+    fig = plt.figure(1, figsize=(8,8))
     axis1 = plt.subplot(221)
-    plt.imshow(original_img)
+    plt.imshow(img)
     axis1.set_title('Original Image')
 
     axis2 = plt.subplot(222)
