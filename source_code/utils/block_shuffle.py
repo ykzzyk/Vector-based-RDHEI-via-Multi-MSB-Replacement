@@ -9,7 +9,6 @@ import time
 import pathlib
 import matplotlib.pyplot as plt
 
-import visualize as vz
 import crypto_tools as ct
 
 def get_blocks(img, block_size):

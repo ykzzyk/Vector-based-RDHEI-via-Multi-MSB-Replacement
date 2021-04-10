@@ -20,6 +20,8 @@ class LMRContentOwner(entity.ContentOwner):
         
     def encode_image(self, img: np.ndarray, secret_key: np.ndarray) -> dict:
         
+        img = img.copy()
+        
         h, w = img.shape
         
         # Construct the best location map
@@ -84,6 +86,8 @@ class LMRDataHider(entity.DataHider):
         
     def hiding_data(self, img: np.ndarray, msb: int) -> dict:
         
+        img = img.copy()
+        
         # extract the location map size
         lm_size = int("".join(np.array((img.flatten()[-18:] & 0x80) % 127, dtype=str)), 2)
                            
@@ -129,6 +133,8 @@ class LMRRecipient(entity.Recipient):
         super(LMRRecipient, self).__init__()
         
     def recover_image(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
+        
+        img = img.copy()
         
         h, w = img.shape
 
@@ -188,6 +194,9 @@ class LMRRecipient(entity.Recipient):
         
     
     def extract_message(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
+        
+        img = img.copy()
+        
         # extract the location map size
         lm_size = int("".join(np.array((img.flatten()[-18:] & 0x80) % 127, dtype=str)), 2)
                            

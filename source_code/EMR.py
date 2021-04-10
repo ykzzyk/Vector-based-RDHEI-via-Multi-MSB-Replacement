@@ -15,6 +15,8 @@ class EMRContentOwner(entity.ContentOwner):
         super(EMRContentOwner, self).__init__()
 
     def encode_image(self, img: np.ndarray, secret_key: np.ndarray) -> dict:
+        
+        img = img.copy()
 
         h, w = img.shape
         
@@ -47,6 +49,8 @@ class EMRDataHider(entity.DataHider):
         
     def hiding_data(self, img: np.ndarray, msb: int) -> dict:
         
+        img.copy()
+        
         # extract the location map
         lm = np.bitwise_and(1, img)
 
@@ -72,6 +76,8 @@ class EMRRecipient(entity.Recipient):
         super(EMRRecipient, self).__init__()
         
     def recover_image(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
+        
+        img = img.copy()
 
         h, w = img.shape
 
@@ -105,6 +111,8 @@ class EMRRecipient(entity.Recipient):
         return img
 
     def extract_message(self, img: np.ndarray, secret_key: np.ndarray, msb: int) -> np.ndarray:
+        
+        img = img.copy()
 
         # Extract the location map
         lm = np.bitwise_and(1, img)

@@ -60,7 +60,7 @@ class ContentOwner(abc.ABC):
         max_msb = msb[max_index]
         max_lm = lms[max_index]
         
-        print(f"Maximum DER is equal to {max_bpp}\n")
+        print(f"Maximum DER is equal to {max_bpp}")
 
         return max_lm, max_msb
     
