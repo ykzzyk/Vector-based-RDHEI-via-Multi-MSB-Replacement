@@ -22,7 +22,7 @@ class EMRContentOwner(entity.ContentOwner):
         h, w = img.shape
         
         # Construct the best location map
-        lm, msb = self.generate_location_map(img, self.MSBS)
+        lm, msb, bpp = self.generate_location_map(img, self.MSBS)
         # lm_before_rotating = lm.copy()
     
         # shuffle the location map based on the generated key
@@ -60,7 +60,7 @@ class EMRContentOwner(entity.ContentOwner):
         img[lm == 0] = np.bitwise_and((lm == 0) * 1 * 0xfe, img)[lm == 0]
 
 
-        return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb}
+        return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb, 'DER': bpp}
         
 
         

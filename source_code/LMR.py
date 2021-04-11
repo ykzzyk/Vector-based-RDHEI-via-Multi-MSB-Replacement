@@ -25,7 +25,7 @@ class LMRContentOwner(entity.ContentOwner):
         h, w = img.shape
         
         # Construct the best location map
-        img, msb_map_size, lm_size, msb = self.generate_maps(img, secret_key, self.MSBS).values()
+        img, msb_map_size, lm_size, msb, der = self.generate_maps(img, secret_key, self.MSBS).values()
         
         if msb:
             # encrypt the rotated image based on the generated secret key
@@ -73,7 +73,7 @@ class LMRContentOwner(entity.ContentOwner):
             # Restore the original shape of the image after it was flattened
             img = img.reshape((h,w))
             
-            return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb}
+            return {'encrypted_img': img, 'before_embedding': encrypt_img, 'msb': msb, 'DER': der}
             
         else:
             return {}

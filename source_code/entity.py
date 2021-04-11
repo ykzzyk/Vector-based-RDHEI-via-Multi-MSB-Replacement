@@ -59,10 +59,8 @@ class ContentOwner(abc.ABC):
         max_bpp = bpps[max_index]
         max_msb = msb[max_index]
         max_lm = lms[max_index]
-        
-        print(f"The maximum data embedding rate (DER) is: {max_bpp}")
 
-        return max_lm, max_msb
+        return max_lm, max_msb, max_bpp
     
     def generate_maps(self, img: np.ndarray, secret_key: np.ndarray, msb: np.ndarray) -> dict:
         
@@ -152,7 +150,6 @@ class ContentOwner(abc.ABC):
             total_size = compressed_msb_map_size + compressed_location_map_size
             
             if total_size < (h * w - 36):
-                print(f"The maximum data embedding rate (DER) is: {max_bpp}")
                 
                 # # Plot the figures
                 # fig = plt.figure(1, figsize=(14,8))
@@ -182,7 +179,8 @@ class ContentOwner(abc.ABC):
                 return {"rotated_img": rotated_img, 
                         "compressed_msb_map_size": compressed_msb_map_size, 
                         "compressed_location_map_size": compressed_location_map_size, 
-                        "max_msb": max_msb}
+                        "max_msb": max_msb,
+                        "max_bpp": max_bpp}
             else:
                 bpps = np.delete(bpps, max_index)
                 msb = np.delete(msb, max_index)
@@ -191,7 +189,8 @@ class ContentOwner(abc.ABC):
         return {"rotated_img": None, 
                 "compressed_msb_map_size": None, 
                 "compressed_location_map_size": None, 
-                "max_msb": None}
+                "max_msb": None,
+                "max_bpp": None}
         
 class DataHider(abc.ABC):
     

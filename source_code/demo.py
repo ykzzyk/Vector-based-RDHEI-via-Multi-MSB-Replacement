@@ -53,7 +53,7 @@ if __name__ == '__main__':
     # Generate the secret key
     secret_key_1 = utils.crypto_tools.generate_secret_key_1(*img.shape)
 
-    encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key_1).values()
+    encoded_img, encrypt_img, msb, der = content_owner.encode_image(img, secret_key_1).values()
     
     marked_encoded_img, secret_key_2, msb, info = data_hider.hiding_data(encoded_img, msb).values()
     
