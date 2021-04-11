@@ -16,18 +16,40 @@ class EMRContentOwner(entity.ContentOwner):
 
     def encode_image(self, img: np.ndarray, secret_key: np.ndarray) -> dict:
         
+        # original_img = img.copy()
         img = img.copy()
 
         h, w = img.shape
         
         # Construct the best location map
         lm, msb = self.generate_location_map(img, self.MSBS)
+        # lm_before_rotating = lm.copy()
     
         # shuffle the location map based on the generated key
         block_sizes = [2,4,8,16,32,64,128,256,512]
         for block_size in block_sizes:
             lm = utils.block_shuffle.block_shuffle(lm, secret_key, block_size) # Rotate the location map
             img = utils.block_shuffle.block_shuffle(img, secret_key, block_size) # Rotate the image
+            
+        # # Plot the images
+        # fig = plt.figure(1, figsize=(10,8))
+        # axis1 = plt.subplot(221)
+        # plt.imshow(original_img)
+        # axis1.set_title('Original Image Before Rotating')
+
+        # axis2 = plt.subplot(222)
+        # plt.imshow(lm_before_rotating)
+        # axis2.set_title('Location Map Before Rotating')
+        
+        # axis3 = plt.subplot(223)
+        # plt.imshow(img)
+        # axis3.set_title('Original Image After Rotating')
+        
+        # axis4 = plt.subplot(224)
+        # plt.imshow(lm)
+        # axis4.set_title('Location Map After Rotating')
+        
+        # plt.show()
 
         # encrypt the image based on the generated secret key
         img = np.bitwise_xor(img, secret_key)

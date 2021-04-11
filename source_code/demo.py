@@ -17,17 +17,26 @@ def parser_arguments():
                         metavar='method',
                         type=str,
                         help="type 'EMR' or 'LMR'")
-    # parser.add_argument('image path', type=str, help='the test image path')
+    
+    parser.add_argument('name', 
+                        metavar='name', 
+                        type=str, 
+                        help='The test image name')
+
 
     args = parser.parse_args()
-    return args.method.upper()
+    
+    return args.method.upper(), args.name
 
 
 if __name__ == '__main__':
 
-    method = parser_arguments()
+    method, name = parser_arguments()
+    
+    print(f"----- Test the image {name} -----\n")
 
-    image_path = 'assets/images/lena.pgm'
+
+    image_path = f'assets/images/{name}.pgm'
     img = skimage.io.imread(image_path)
     h, w = img.shape
 
@@ -42,18 +51,16 @@ if __name__ == '__main__':
     
     # Perform the corresponding method based on the user input
     # Generate the secret key
-    secret_key = utils.crypto_tools.generate_secret_key_1(*img.shape)
+    secret_key_1 = utils.crypto_tools.generate_secret_key_1(*img.shape)
 
-    encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key).values()
+    encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key_1).values()
     
     marked_encoded_img, secret_key_2, msb, info = data_hider.hiding_data(encoded_img, msb).values()
-
-    message = recipient.extract_message(marked_encoded_img, secret_key_2, msb)
-    print((info == message).all())
     
-    recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
+    recovered_img = recipient.recover_image(marked_encoded_img, secret_key_1, msb)
     
-    fig = plt.figure(1, figsize=(8,8))
+    # Plot the images
+    fig = plt.figure(1, figsize=(10,8))
     axis1 = plt.subplot(221)
     plt.imshow(img)
     axis1.set_title('Original Image')

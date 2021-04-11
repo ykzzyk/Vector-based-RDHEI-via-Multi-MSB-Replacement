@@ -45,6 +45,7 @@ def parser_arguments():
                         metavar='method',
                         type=str,
                         help="type 'EMR' or 'LMR'")
+    
     parser.add_argument('name', 
                         metavar='name', 
                         type=str, 
@@ -77,16 +78,16 @@ if __name__ == '__main__':
     # Perform the corresponding method based on the user input
     # Construct the RRBE scheme
     # Generate the secret key
-    secret_key = utils.crypto_tools.generate_secret_key_1(*img.shape)
+    secret_key_1 = utils.crypto_tools.generate_secret_key_1(*img.shape)
 
-    encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key).values()
+    encoded_img, encrypt_img, msb = content_owner.encode_image(img, secret_key_1).values()
     
     marked_encoded_img, secret_key_2, msb, info = data_hider.hiding_data(encoded_img, msb).values()
       
     message = recipient.extract_message(marked_encoded_img, secret_key_2, msb)
     print(f"\n----- Secret Information Extraction Phase -----\nIs it error-free? Answer: {(info == message).all()}")
     
-    recovered_img = recipient.recover_image(marked_encoded_img, secret_key, msb)
+    recovered_img = recipient.recover_image(marked_encoded_img, secret_key_1, msb)
     
     print("\n----- Shannon Entropy Results -----")
     

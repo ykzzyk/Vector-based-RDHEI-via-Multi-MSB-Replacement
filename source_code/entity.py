@@ -70,7 +70,12 @@ class ContentOwner(abc.ABC):
         Generate the most significant map (MSB map)
         """
         
+        # img_before_rotating = img.copy()
+        
         # Create the most significant map (msb_map)
+        # msb_map_before_rotating = (img & 0x80) % 127
+        # msb_map = msb_map_before_rotating.copy()
+        
         msb_map = (img & 0x80) % 127
         
         """
@@ -117,6 +122,7 @@ class ContentOwner(abc.ABC):
             max_bpp = bpps[max_index]
             max_msb = msb[max_index]
             max_lm = lms[max_index]
+            # lm_before_rotating = max_lm.copy()
             
             block_sizes = [16, 32, 64, 128, 256, 512]
             for block_size in block_sizes:
@@ -147,6 +153,32 @@ class ContentOwner(abc.ABC):
             
             if total_size < (h * w - 36):
                 print(f"The maximum data embedding rate (DER) is: {max_bpp}")
+                
+                # # Plot the figures
+                # fig = plt.figure(1, figsize=(14,8))
+                # axis1 = plt.subplot(231)
+                # plt.imshow(lm_before_rotating)
+                # axis1.set_title('The Optimal Location Map Before Rotating')
+                # axis2 = plt.subplot(234)
+                # plt.imshow(max_lm)
+                # axis2.set_title('The Optimal Location Map After Rotating')
+
+                # axis3 = plt.subplot(232)
+                # plt.imshow(msb_map_before_rotating)
+                # axis3.set_title('The First MSB Map Before Rotating')
+                # axis4 = plt.subplot(235)
+                # plt.imshow(msb_map)
+                # axis4.set_title('The First MSB Map After Rotating')
+                
+                # axis5 = plt.subplot(233)
+                # plt.imshow(img_before_rotating)
+                # axis5.set_title('The Original image Before Rotating')
+                # axis6 = plt.subplot(236)
+                # plt.imshow(rotated_img)
+                # axis6.set_title('The Original image After Rotating')
+                
+                # plt.show()
+                
                 return {"rotated_img": rotated_img, 
                         "compressed_msb_map_size": compressed_msb_map_size, 
                         "compressed_location_map_size": compressed_location_map_size, 
