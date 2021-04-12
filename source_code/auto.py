@@ -2,7 +2,9 @@ import argparse
 import skimage.io
 import os
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
 import numpy as np
+import pandas as pd
 import math
 
 import EMR
@@ -39,6 +41,44 @@ def parser_arguments():
     args = parser.parse_args()
     
     return args.method.upper(), args.handle.upper(), args.images
+
+def plot_der(x_axis, y_axis, average_axis, x_lim, method):
+    my_figure = plt.figure(figsize=[30, 10])
+    ax = my_figure.add_subplot(1, 1, 1)
+
+    # Removing top and right spines
+    #ax.spines['right'].set_visible(False)
+    #ax.spines['top'].set_visible(False)
+
+    # Re-directioning ticks inward
+    ax.tick_params(direction="in")
+
+    # plt.scatter(x_axis, y_axis, s=15, c="navy")
+    plt.plot(x_axis, y_axis, c="blue", linewidth=1, marker='.', fillstyle='none')
+    plt.plot(x_axis, average_axis, color="red", label='Average', linewidth=2)
+
+    plt.xticks(fontsize=35)
+    plt.yticks(fontsize=35)
+
+    ax.xaxis.set_tick_params(width=3, length=13)
+    ax.yaxis.set_tick_params(width=3, length=13)
+
+    yticks = ax.yaxis.get_major_ticks()
+    yticks[0].set_visible(False)
+
+    font = font_manager.FontProperties(size=35)
+    plt.legend(loc='best', prop=font, edgecolor='black')
+
+    plt.xlabel('images', fontsize=35)
+    plt.ylabel('DER (bpp)', fontsize=35)
+
+    plt.xlim(0, x_lim-1)
+    plt.ylim(0, 6)
+
+    filepath = Path.cwd() / 'outputs' / f'{method}_der_plot_{x_lim}'
+
+    plt.savefig(filepath, dpi=200, bbox_inches='tight')
+
 
 if __name__ == "__main__":
     
@@ -103,9 +143,6 @@ if __name__ == "__main__":
                 dir_sum["PSNR"].append('inf')
                 dir_sum["SSIM"].append(1)  
             
-        with open(Path.cwd() / 'outputs' / f'{method}_{num}.pickle', 'ab+') as handle:
-            pickle.dump(dir_sum, handle, protocol=pickle.HIGHEST_PROTOCOL)
-            
         with open(Path.cwd() / 'outputs' / f'{method}_{num}.csv', 'a+') as f:        
             writer = csv.writer(f)
             if start == 0:
@@ -122,54 +159,54 @@ if __name__ == "__main__":
     elif file_handle == 'OPEN':
         
         try:
-            with open(Path.cwd() / 'outputs' / f'{method}_{num}.pickle', 'rb') as handle:
-                dir_sum = pickle.load(handle)                
+            df = pd.read_csv(Path.cwd() / 'outputs' / f'{method}_{num}.csv')         
                 
             print("\n\n################### DER Analysis ###################\n")
     
             print("\n----- The Maximum DER is: ----")
-            print(max(dir_sum["DER"]))
+            print(max(df["DER"]))
             
             print("\n----- The Minimal DER is: ----")
-            print(min(dir_sum["DER"]))
+            print(min(df["DER"]))
             
             print("\n----- The Average DER is: ----")
-            print(sum(dir_sum["DER"]) / num)
+            average_der = sum(df["DER"]) / num
+            print(average_der)
             
             print("\n\n################### MSB Analysis ###################\n")
             
             print("\n----- The Maximum MSB is: ----")
-            print(max(dir_sum["MSB"]))
+            print(max(df["MSB"]))
             
             print("\n----- The Minimal MSB is: ----")
-            print(min(dir_sum["MSB"]))
+            print(min(df["MSB"]))
             
             print("\n----- The Most Frequent MSB is: ----")
-            print((Counter(dir_sum["MSB"])).most_common(1)[0][0])
+            print((Counter(df["MSB"])).most_common(1)[0][0])
             
             print("\n\n################### PSNR Analysis ###################\n")
             
             if method == 'EMR':
                 
                 print("\n----- The Maximum PSNR is: ----")
-                print(max(dir_sum["PSNR"]))
+                print(max(df["PSNR"]))
                 
                 print("\n----- The Minimal PSNR is: ----")
-                print(min(dir_sum["PSNR"]))
+                print(min(df["PSNR"]))
                 
                 print("\n----- The Average PSNR is: ----")
-                print(sum(dir_sum["PSNR"]) / num)
+                print(sum(df["PSNR"]) / num)
                 
                 print("\n\n################### SSIM Analysis ###################\n")
                 
                 print("\n----- The Maximum SSIM is: ----")
-                print(max(dir_sum["SSIM"]))
+                print(max(df["SSIM"]))
                 
                 print("\n----- The Minimal SSIM is: ----")
-                print(min(dir_sum["SSIM"]))
+                print(min(df["SSIM"]))
                 
                 print("\n----- The Average SSIM is: ----")
-                print(sum(dir_sum["SSIM"]) / num)
+                print(sum(df["SSIM"]) / num)
                 print("\n")
                 
             elif method == 'LMR':
@@ -193,6 +230,16 @@ if __name__ == "__main__":
                 print("\n----- The Average SSIM is: ----")
                 print(1)
                 print("\n")
+
+            # Plot the DER
+            plot_der(
+                [i for i in range(len(df['DER']))], 
+                df['DER'], 
+                [average_der for i in range(len(df['DER']))],
+                num,
+                method
+            )
+
                 
         except FileNotFoundError:
             print("Sorry, the file does not exsit")
