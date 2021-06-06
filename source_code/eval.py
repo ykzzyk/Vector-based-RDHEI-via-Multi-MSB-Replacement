@@ -140,9 +140,9 @@ if __name__ == '__main__':
         psnr = metrics.peak_signal_noise_ratio(img, recovered_img, data_range=None)
         print(f"The Peak Signal-to-Noise Ratio between original image and recovered image is: {psnr}")
         
-    print("\n----- SSIM Results -----")
-    
-    # Calculate the SSIM
-    ssim = metrics.structural_similarity(img, recovered_img, data_range=recovered_img)
-    print(f"The Structural SIMilarity between original image and recovered image is: {ssim}\n")
-    
+        print("\n----- SSIM Results -----")
+        
+        # Calculate the SSIM
+        ssim = metrics.structural_similarity(img, recovered_img)
+        print(f"The Structural SIMilarity between original image and recovered image is: {ssim}\n")
+        

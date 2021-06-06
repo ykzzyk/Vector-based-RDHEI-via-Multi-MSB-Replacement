@@ -18,7 +18,7 @@ class ContentOwner(abc.ABC):
     def encode_image(self, img: np.ndarray) -> dict:
         ...
 
-    def generate_location_map(self, img: np.ndarray, msb: np.ndarray) -> (np.ndarray, int):
+    def generate_location_map(self, img: np.ndarray, msb: np.ndarray):
         """
         Generates all possible location maps and determines the best one based
         on its bpp.

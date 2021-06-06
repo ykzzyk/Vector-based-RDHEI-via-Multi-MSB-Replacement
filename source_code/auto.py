@@ -95,7 +95,7 @@ if __name__ == "__main__":
     method, file_handle, num = parser_arguments()
     
     if file_handle == 'TEST':
-        start = 3000
+        start = 0
         for i in tqdm.tqdm(range(start, num)):
             image_path = Path.cwd() / 'assets' / 'BOWS2' / f'{i}.pgm'
             img = skimage.io.imread(image_path)
@@ -110,15 +110,18 @@ if __name__ == "__main__":
             
             secret_key_1 = utils.crypto_tools.generate_secret_key_1(*img.shape)
 
-            encoded_img, encrypt_img, msb, der = content_owner.encode_image(img, secret_key_1).values()
-    
-            if msb == None:
+            try:
+                encoded_img, encrypt_img, msb, der = content_owner.encode_image(img, secret_key_1).values()
+                
+            except ValueError:
                 dir_sum["image_name"].append(f'{i}.pgm')
                 dir_sum["DER"].append('None')
                 dir_sum["MSB"].append('None')
                 dir_sum["PSNR"].append('None')
                 dir_sum["SSIM"].append('None')  
                 lmr_bad_cases += 1
+                
+                print(f'lmr_bad_cases: {lmr_bad_cases}')
                 continue
             
             dir_sum["image_name"].append(f'{i}.pgm')
@@ -132,8 +135,7 @@ if __name__ == "__main__":
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     psnr = metrics.peak_signal_noise_ratio(img, recovered_img, data_range=None)
-                    
-                ssim = metrics.structural_similarity(img, recovered_img, data_range=recovered_img)
+                    ssim = metrics.structural_similarity(img, recovered_img)
 
                 dir_sum["PSNR"].append(psnr)
                 dir_sum["SSIM"].append(ssim)  
@@ -164,22 +166,51 @@ if __name__ == "__main__":
             print("\n\n################### DER Analysis ###################\n")
     
             print("\n----- The Maximum DER is: ----")
-            print(max(df["DER"]))
+            # print(max(df["DER"]))
+            max_der = 0
+            for i in df["DER"]:
+                if i != 'None' and float(i) > max_der:
+                    max_der = float(i)
+            print(max_der)
             
             print("\n----- The Minimal DER is: ----")
-            print(min(df["DER"]))
+            # print(min(df["DER"]))
+            min_der = max_der
+            for i in df["DER"]:
+                if i != 'None' and float(i) < min_der:
+                    min_der = float(i)
+            print(min_der)
             
             print("\n----- The Average DER is: ----")
-            average_der = sum(df["DER"]) / num
+            
+            # average_der = sum(df["DER"]) / len(df["DER"])
+            # summation
+            summ = 0
+            for i in df["DER"]:
+                if i != 'None':
+                    summ += float(i)
+                
+            average_der = summ / len(df["DER"])
             print(average_der)
             
             print("\n\n################### MSB Analysis ###################\n")
             
             print("\n----- The Maximum MSB is: ----")
-            print(max(df["MSB"]))
             
+            # print(max(df["MSB"]))
+            max_value = 0
+            for i in df["MSB"]:
+                if i != 'None' and int(i) > max_value:
+                        max_value = int(i)
+            print(max_value)
+            
+            # print(min(df["MSB"]))
             print("\n----- The Minimal MSB is: ----")
-            print(min(df["MSB"]))
+            min_value = max_value
+            for i in df["MSB"]:
+                if i != 'None' and int(i) < min_value:
+                        min_value = int(i)
+            print(min_value)
             
             print("\n----- The Most Frequent MSB is: ----")
             print((Counter(df["MSB"])).most_common(1)[0][0])
@@ -231,14 +262,14 @@ if __name__ == "__main__":
                 print(1)
                 print("\n")
 
-            # Plot the DER
-            plot_der(
-                [i for i in range(len(df['DER']))], 
-                df['DER'], 
-                [average_der for i in range(len(df['DER']))],
-                num,
-                method
-            )
+            # # Plot the DER
+            # plot_der(
+            #     [i for i in range(len(df['DER']))], 
+            #     df['DER'], 
+            #     [average_der for i in range(len(df['DER']))],
+            #     num,
+            #     method
+            # )
 
                 
         except FileNotFoundError:

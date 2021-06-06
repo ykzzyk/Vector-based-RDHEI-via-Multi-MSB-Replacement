@@ -77,4 +77,5 @@ if __name__ == '__main__':
     plt.imshow(recovered_img)
     axis4.set_title('Reconstructed Image')
     
-    plt.show()
+    plt.savefig(f"outputs/{method}_demo_{name}", dpi=200, bbox_inches='tight')
+    
