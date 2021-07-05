@@ -21,12 +21,14 @@ class EMRContentOwner(entity.ContentOwner):
 
         h, w = img.shape
         
+        limit = h if h > w else w # The limitation of block size
+        
         # Construct the best location map
         lm, msb, bpp = self.generate_location_map(img, self.MSBS)
         # lm_before_rotating = lm.copy()
     
         # shuffle the location map based on the generated key
-        block_sizes = [2,4,8,16,32,64,128,256,512]
+        block_sizes = [2**(i+1) for i in range(0, limit) if 2**(i+1) <= limit] # block_sizes = [2,4,8,16,32,64,128,256,512]
         for block_size in block_sizes:
             lm = utils.block_shuffle.block_shuffle(lm, secret_key, block_size) # Rotate the location map
             img = utils.block_shuffle.block_shuffle(img, secret_key, block_size) # Rotate the image
@@ -103,6 +105,8 @@ class EMRRecipient(entity.Recipient):
 
         h, w = img.shape
 
+        limit = h if h > w else w # The limitation of block size
+
         # Extract the location map
         lm = np.bitwise_and(1, img)
 
@@ -110,7 +114,7 @@ class EMRRecipient(entity.Recipient):
         img ^= secret_key
 
         # Rotate the location map
-        block_sizes = [512, 256, 128, 64, 32, 16, 8, 4, 2]
+        block_sizes = [2**(i+1) for i in range(0, limit) if 2**(i+1) <= limit][::-1] # block_sizes = [512, 256, 128, 64, 32, 16, 8, 4, 2]
 
         # shuffle the location map and marked decrypted image based on the generated key
         for block_size in block_sizes:

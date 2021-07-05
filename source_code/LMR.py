@@ -138,6 +138,8 @@ class LMRRecipient(entity.Recipient):
         
         h, w = img.shape
 
+        limit = h if h > w else w # The limitation of block size
+
         # extract the location map size and the msb msp size
         lm_size = int("".join(np.array((img.flatten()[-18:] & 0x80) % 127, dtype=str)), 2)
         mm_size = int("".join(np.array((img.flatten()[-36:-18] & 0x80) % 127, dtype=str)), 2)
@@ -165,7 +167,7 @@ class LMRRecipient(entity.Recipient):
         img ^= secret_key
         
         # Rotate the location map
-        block_sizes = [512, 256, 128, 64, 32, 16]
+        block_sizes = [2**(i+1) for i in range(3, limit) if 2**(i+1) <= limit][::-1] # block_sizes = [512, 256, 128, 64, 32, 16]
 
         # shuffle the location map based on the generated key
         for block_size in block_sizes:
