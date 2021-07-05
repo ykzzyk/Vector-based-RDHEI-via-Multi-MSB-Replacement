@@ -81,6 +81,9 @@ class ContentOwner(abc.ABC):
         """
         
         h, w = img.shape
+
+        limit = h if h > w else w # The limitation of block size
+
         msbs = msb.shape[0]
         
         # Expand image to account for multiple location maps
@@ -122,7 +125,7 @@ class ContentOwner(abc.ABC):
             max_lm = lms[max_index]
             # lm_before_rotating = max_lm.copy()
             
-            block_sizes = [16, 32, 64, 128, 256, 512]
+            block_sizes = [2**(i+1) for i in range(3, limit) if 2**(i+1) <= limit] # block_sizes = [16, 32, 64, 128, 256, 512]
             for block_size in block_sizes:
                 max_lm = utils.block_shuffle.block_shuffle(max_lm, secret_key, block_size) # Rotate the location map
                 if bpps.shape[0] == 7:
@@ -131,11 +134,12 @@ class ContentOwner(abc.ABC):
             # Employ JBIG-KIT to compress the two maps - MSB_map, Location_map
             msb_map_str = str(msb_map.flatten()).replace('[', ' ').replace(']', ' ')
             max_lm_str = str(max_lm.flatten()).replace('[', ' ').replace(']', ' ')
+
             with open(f'assets/temp/msb_map.pbm', 'w+') as f:
-                f.write(f'P1\n512\n512\n\n{msb_map_str}')
+                f.write(f'P1\n{h}\n{w}\n\n{msb_map_str}')
                 
             with open(f'assets/temp/lm_map.pbm', 'w+') as f:
-                f.write(f'P1\n512\n512\n\n{max_lm_str}')
+                f.write(f'P1\n{h}\n{w}\n\n{max_lm_str}')
 
             call(['tools/pbmtojbg', '-q', 'assets/temp/msb_map.pbm', 'assets/temp/msb_map.jbg'])
             call(['tools/pbmtojbg', '-q', 'assets/temp/lm_map.pbm', 'assets/temp/lm_map.jbg'])
