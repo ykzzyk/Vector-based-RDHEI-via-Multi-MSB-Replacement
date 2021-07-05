@@ -32,7 +32,17 @@ RDHEI-EMR-LMR
 
 ### Prerequisites
 
-We recommend to use **conda** or **miniconda** to install the environments from the "environment.yml" file. But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
+We used MacOS, and recommend to use **conda** or **miniconda** to install the environments. The install comments are listed as following:
+```
+# Create an enviroment
+conda creat --name test python=3.8
+# Activate the new enviroment
+conda activate test
+# Install relate packages
+conda install argparse
+ython -m pip install scikit-image # will install nump
+```
+But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
 
 ```
 # An Example 
