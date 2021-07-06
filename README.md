@@ -32,7 +32,7 @@ RDHEI-EMR-LMR
 
 ### Prerequisites
 
-We used MacOS, and recommend to use **conda** or **miniconda** to install the environments. The install comments are listed as following:
+We recommend to use **conda** or **miniconda** to install the environments. The install comments are listed as following:
 
 ```
 # Create an enviroment
