@@ -2,7 +2,9 @@ import argparse
 import skimage.io
 import os
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 import matplotlib.font_manager as font_manager
+from scipy.stats import norm
 import numpy as np
 import pandas as pd
 import math
@@ -270,6 +272,33 @@ if __name__ == "__main__":
             #     num,
             #     method
             # )
+
+            # Plotting the histogram
+            data = df["DER"].replace(to_replace='None', value=np.nan).dropna()
+
+            data = np.array(data, dtype=float)
+
+            # Fit a normal distribution to the data:
+            mu, std = norm.fit(data)
+
+            # Plot the histogram.
+            plt.hist(data, bins=50, density=True, alpha=0.5, color='g', edgecolor='green')
+
+            # Plot the PDF.
+            xmin, xmax = plt.xlim()
+            dmax, dmin = max(data), min(data)
+            x = np.linspace(xmin, xmax, 100)
+            p = norm.pdf(x, mu, std)
+            title = "Results: avg = %.2f,  std = %.2f, max = %.2f, min = %.2f" % (mu, std, dmax, dmin)
+
+            plt.plot(x, p, 'k', linewidth=1.5)
+            plt.xlabel("DER (bpp)")
+            plt.ylabel("Frequency (%)")
+            plt.title(title)
+            plt.grid(True)
+
+            filepath = Path.cwd() / 'outputs' / f"{method}_histogram_{num}"
+            plt.savefig(filepath, dpi=200, bbox_inches='tight')
 
                 
         except FileNotFoundError:
