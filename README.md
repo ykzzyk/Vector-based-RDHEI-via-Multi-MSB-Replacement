@@ -23,7 +23,7 @@ RDHEI-EMR-LMR
 			└── entity.py
 			└── EMR.py
 			└── LMR.py
-			
+
 	└── environemnt.yml // use conda/miniconda to recreate the environment
 	└── LICENSE
 	└── README.md
@@ -33,6 +33,7 @@ RDHEI-EMR-LMR
 ### Prerequisites
 
 We used MacOS, and recommend to use **conda** or **miniconda** to install the environments. The install comments are listed as following:
+
 ```
 # Create an enviroment
 conda creat --name test python=3.8
@@ -40,12 +41,15 @@ conda creat --name test python=3.8
 conda activate test
 # Install relate packages
 conda install argparse
-ython -m pip install scikit-image # will install nump
+python -m pip install scikit-image # will install nump
+pip install pandas # For testing the auto.py file
+pip install tdqm # For testing the auto.py file
 ```
+
 But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
 
 ```
-# An Example 
+# An Example
 # Use conda/miniconda to create the same environment to run this project
 # Create the environment from the environment.yml file
 
@@ -68,7 +72,8 @@ python demo.py <method> <image_name>
 # for example, we test image lena use EMR method:
 python demo.py EMR lena
 ```
-The demo result is stored in the outputs dictionary, and the file name is "EMR\_demo_lena.png".
+
+The demo result is stored in the outputs dictionary, and the file name is "EMR_demo_lena.png".
 
 **The demo tesing result of image lena with the EMR method:**
 
@@ -78,7 +83,8 @@ The demo result is stored in the outputs dictionary, and the file name is "EMR\_
 # for example, we test image lena use LMR method:
 python demo.py LMR lena
 ```
-The demo result is stored in the outputs dictionary, and the file name is "LMR\_demo_lena.png".
+
+The demo result is stored in the outputs dictionary, and the file name is "LMR_demo_lena.png".
 
 **The demo tesing result of image lena with the LMR method:**
 ![LMR_demo_lena](https://user-images.githubusercontent.com/55161270/120936135-e2c2a580-c6cb-11eb-8a00-a0597a3a2037.png)
@@ -184,7 +190,8 @@ This file is for automated testing purpose:
 cd source_code
 python auto.py <method> <handle> <images> # <method>: emr/lmr, <handle>: test/open, <images>: how many images will be tested/opened.
 ```
-We stored the auto testing result of 10,000 imaegs using EMR method in the outputs dictionary, and the file name is "EMR\_10000.csv".
+
+We stored the auto testing result of 10,000 imaegs using EMR method in the outputs dictionary, and the file name is "EMR_10000.csv".
 
 ```
 # for example, if we want to open the EMR_10000.csv file
@@ -246,7 +253,8 @@ python auto.py emr open 100000
 ----- The Average SSIM is: ----
 0.995820349480765
 ```
-We stored the auto testing result of 10,000 imaegs using LMR method in the outputs dictionary, and the file name is "LMR\_10000.csv".
+
+We stored the auto testing result of 10,000 imaegs using LMR method in the outputs dictionary, and the file name is "LMR_10000.csv".
 
 ```
 # for example, if we want to open the LMR_10000.csv file
@@ -311,9 +319,8 @@ inf
 
 ## Authors
 
-* **Yike Zhang** - *Initial work* - [GitHub](https://github.com/ykzzyk/RDHEI-EMR-LMR)
+- **Yike Zhang** - _Initial work_ - [GitHub](https://github.com/ykzzyk/RDHEI-EMR-LMR)
 
 ## License
 
 This project is licensed under the MIT License.
-
