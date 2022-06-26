@@ -37,7 +37,7 @@ We recommend to use **conda** or **miniconda** to install the environments. The 
 
 ```
 # Create an enviroment
-conda creat --name test python=3.8
+conda create --name test python=3.8
 # Activate the new enviroment
 conda activate test
 # Install relate packages
