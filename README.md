@@ -4,7 +4,7 @@ This is a project for vector-based reversible data hiding in encrypted images vi
 
 ## Getting Started
 
-These instructions below will guide you on running this project on your local machine for development and testing purposes.
+These instructions below will guide you on running this project on your local machine for development and testing purposes.\
 *For addtional information and references, please check the [Appendix](http://dp.stmarytx.edu/wluo/Appendix.pdf) for the paper.*
 
 ### File structure
