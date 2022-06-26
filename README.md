@@ -45,6 +45,7 @@ conda install argparse
 python -m pip install scikit-image # will install nump
 pip install pandas # For testing the auto.py file
 pip install tdqm # For testing the auto.py file
+conda install -c conda-forge matplotlib # For visualization
 ```
 
 But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
