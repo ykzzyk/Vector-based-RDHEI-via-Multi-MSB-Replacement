@@ -8,9 +8,8 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            // "program": "/Users/home/github/RDHEI-EMR-LMR/source_code/EMR.py",
-            "program": "/Users/home/github/RDHEI-EMR-LMR/source_code/demo.py",
-            "cwd": "/Users/home/github/RDHEI-EMR-LMR/source_code",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}/source_code",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args":[

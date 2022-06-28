@@ -4,7 +4,7 @@ This is a project for vector-based reversible data hiding in encrypted images vi
 
 ## Getting Started
 
-These instructions below will guide you on running this project on your local machine for development and testing purposes. Note that our code can run in MAC/Linux system, but still in cannot run in Windows.
+These instructions below will guide you on running this project on your local machine for development and testing purposes. Note that our code can run in MAC/Linux system, but still have some errors when running in Windows.
 _For addtional information and references, please check the [Appendix](http://dp.stmarytx.edu/wluo/Appendix.pdf) for this paper._
 
 ### File structure
@@ -199,7 +199,7 @@ We stored the auto testing result of 10,000 imaegs using EMR method in the outpu
 ```
 # for example, if we want to open the EMR_10000.csv file
 
-python auto.py emr open 100000
+python auto.py emr open 10000
 ```
 
 **The auto tesing result of image lena with the EMR method:**
@@ -262,7 +262,7 @@ We stored the auto testing result of 10,000 imaegs using LMR method in the outpu
 ```
 # for example, if we want to open the LMR_10000.csv file
 
-python auto.py lmr open 100000
+python auto.py lmr open 10000
 ```
 
 **The auto tesing result of image lena with the LMR method:**
