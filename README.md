@@ -5,6 +5,7 @@ This is a project for vector-based reversible data hiding in encrypted images vi
 ## Getting Started
 
 These instructions below will guide you on running this project on your local machine for development and testing purposes.
+*For addtional information and references, please check the [Appendix](http://dp.stmarytx.edu/wluo/Appendix.pdf) for this paper.*
 
 ### File structure
 
@@ -36,7 +37,7 @@ We recommend to use **conda** or **miniconda** to install the environments. The 
 
 ```
 # Create an enviroment
-conda creat --name test python=3.8
+conda create --name test python=3.8
 # Activate the new enviroment
 conda activate test
 # Install relate packages
@@ -44,6 +45,7 @@ conda install argparse
 python -m pip install scikit-image # will install nump
 pip install pandas # For testing the auto.py file
 pip install tdqm # For testing the auto.py file
+conda install -c conda-forge matplotlib # For visualization
 ```
 
 But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
