@@ -20,7 +20,7 @@ RDHEI-EMR-LMR
 			└── assets // for all testing images
 			└── outputs // for all the testing outputs
 			└── temp // store temporary files, not important
-			└── tools // JBIG-KIT excutable software
+			└── tools // JBIG-KIT executable software
 			└── utils
 			└── auto.py // for automated testing of 10,000 images in BOWS2 database
 			└── demo.py // for demo a specific image purpose
