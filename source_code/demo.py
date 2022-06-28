@@ -33,8 +33,7 @@ if __name__ == '__main__':
 
     method, name = parser_arguments()
     
-    print(f"----- Test the image {name} -----\n")
-
+    print(f"\n----- Test the image {name} -----\n")
 
     image_path = f'assets/images/{name}.pgm'
     img = skimage.io.imread(image_path)
@@ -78,4 +77,5 @@ if __name__ == '__main__':
     axis4.set_title('Reconstructed Image')
     
     plt.savefig(f"outputs/{method}_demo_{name}", dpi=200, bbox_inches='tight')
-    
+
+    print(f"file generated successfully in the directory 'source_code/outputs/{method}_demo_{name}.png'.\n")

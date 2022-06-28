@@ -89,6 +89,6 @@ dependencies:
   - zlib=1.2.11=h1de35cc_3
   - zstd=1.4.5=h41d2c2f_0
   - pip:
-    - pandas==1.2.3
-    - pytz==2021.1
+      - pandas==1.2.3
+      - pytz==2021.1
 prefix: /opt/anaconda3/envs/master
