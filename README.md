@@ -55,7 +55,7 @@ pip install pathlib
 
 But if you prefer to use **pip** install the required enviroment for this project, there is also a file named "requirements.txt" to help.
 
-```
+```bash
 # An Example
 # Use conda/miniconda to create the same environment to run this project
 # Create the environment from the environment.yml file
@@ -86,7 +86,7 @@ The demo result is stored in the outputs dictionary, and the file name is "EMR_d
 
 ![EMR_demo_lena](https://user-images.githubusercontent.com/55161270/120936049-69c34e00-c6cb-11eb-9928-56488ba3124e.png)
 
-```
+```bash
 # for example, we test image lena use LMR method:
 python demo.py LMR lena
 ```
@@ -100,7 +100,7 @@ The demo result is stored in the outputs dictionary, and the file name is "LMR_d
 
 This is a evaluation for using EMR or LMR to test a specific image:
 
-```
+```bash
 cd source_code
 python eval.py <method> <image_name>
 
@@ -110,7 +110,7 @@ python eval.py EMR lena
 
 **The evaluation tesing result of image lena with the EMR method:**
 
-```
+```bash
 ----- Test the image lena -----
 
 ----- Maximum Data Embedding Rate -----
@@ -146,14 +146,14 @@ The Peak Signal-to-Noise Ratio between original image and recovered image is: 51
 The Structural SIMilarity between original image and recovered image is: 0.996270899634543
 ```
 
-```
+```bash
 # for example, we test image lena use EMR method:
 python eval.py LMR lena
 ```
 
 **The evaluation tesing result of image lena with the LMR method:**
 
-```
+```bash
 ----- Test the image lena -----
 
 ----- Maximum Data Embedding Rate -----
@@ -193,14 +193,14 @@ The Structural SIMilarity between original image and recovered image is: 1.0
 
 This file is for automated testing purpose:
 
-```
+```bash
 cd source_code
 python auto.py <method> <handle> <images> # <method>: emr/lmr, <handle>: test/open, <images>: how many images will be tested/opened.
 ```
 
 We stored the auto testing result of 10,000 imaegs using EMR method in the outputs dictionary, and the file name is "EMR_10000.csv".
 
-```
+```bash
 # for example, if we want to open the EMR_10000.csv file
 
 python auto.py emr open 10000
@@ -208,7 +208,7 @@ python auto.py emr open 10000
 
 **The auto tesing result of image lena with the EMR method:**
 
-```
+```bash
 ################### DER Analysis ###################
 
 
@@ -263,7 +263,7 @@ python auto.py emr open 10000
 
 We stored the auto testing result of 10,000 imaegs using LMR method in the outputs dictionary, and the file name is "LMR_10000.csv".
 
-```
+```bash
 # for example, if we want to open the LMR_10000.csv file
 
 python auto.py lmr open 10000
@@ -271,7 +271,7 @@ python auto.py lmr open 10000
 
 **The auto tesing result of image lena with the LMR method:**
 
-```
+```bash
 
 ################### DER Analysis ###################
 
