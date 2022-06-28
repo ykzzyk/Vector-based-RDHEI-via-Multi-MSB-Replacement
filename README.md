@@ -39,11 +39,11 @@ RDHEI-EMR-LMR
 
 We recommend to use **conda** or **miniconda** to install the environments. The install comments are listed as following:
 
-```
+```bash
 # Create an enviroment
-conda create --name test python=3.8
+conda create --name test_rdhei python=3.8
 # Activate the new enviroment
-conda activate test
+conda activate test_rdhei
 # Install relate packages
 conda install argparse
 python -m pip install scikit-image # will install nump
@@ -72,7 +72,7 @@ There are three files under the source_code dictionary for testing purpose: auto
 
 This is a demo for using EMR or LMR to test a specific image:
 
-```
+```bash
 cd source_code
 python demo.py <method> <image_name>
 
