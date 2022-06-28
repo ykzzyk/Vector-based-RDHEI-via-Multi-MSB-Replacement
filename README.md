@@ -8,7 +8,7 @@ These instructions below will guide you on running this project on your local ma
 
 > **Note** For addtional information and references, please check the [Appendix](http://dp.stmarytx.edu/wluo/Appendix.pdf) for this paper.
 
-> **Warning** Our code can run perfectly in UNIX-based systems (such as MacOS) since I pre-compiled the [JBIG-KIT compression source code](https://www.cl.cam.ac.uk/~mgk25/jbigkit/) to executable files. It will have some issues when running in the Windows due to the source c files are not compiled in our provided code. Overall, if the JBIG-KIT software can run successfully in your local machine, then our program should run seamlessly as well.
+> **Warning** Our code can run perfectly in UNIX-based systems (such as MacOS) since we pre-compiled the [JBIG-KIT compression source code](https://www.cl.cam.ac.uk/~mgk25/jbigkit/) to executable files. It will have some issues when running in the Windows due to the source c files are not compiled in our provided code. Overall, if the JBIG-KIT software can run successfully in your local machine, then our program should run seamlessly as well.
 
 ### File structure
 
