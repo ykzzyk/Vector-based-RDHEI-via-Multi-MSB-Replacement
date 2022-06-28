@@ -240,8 +240,8 @@ if __name__ == "__main__":
     secret_key = utils.crypto_tools.generate_secret_key_1(*img.shape)
     
     co = LMRContentOwner()
-    encrypted_image, msb = co.encode_image(img, secret_key).values()
+    encoded_img, encrypt_img, msb, der = co.encode_image(img, secret_key).values()
     dh = LMRDataHider()
-    marked_encrypted_image, ms = dh.hiding_data(encrypted_image, msb).values()
+    marked_encoded_img, secret_key_2, msb, info = dh.hiding_data(encoded_img, msb).values()
     rp = LMRRecipient()
-    rp.recover_image(marked_encrypted_image, secret_key, msb)
+    rp.recover_image(marked_encoded_img, secret_key, msb)
