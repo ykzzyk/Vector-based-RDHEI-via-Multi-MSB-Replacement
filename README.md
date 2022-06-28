@@ -1,6 +1,6 @@
 # Vector-based RDHEI via Multi-MSB Replacement
 
-This is a project for vector-based reversible data hiding in encrypted images via multi-MSB replacement.
+This is a project for TCSVT journal paper [vector-based reversible data hiding in encrypted images via multi-MSB replacement](https://ieeexplore.ieee.org/document/9796573/authors#authors).
 
 ## Getting Started
 
