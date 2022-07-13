@@ -8,7 +8,7 @@ These instructions below will guide you on running this project on your local ma
 
 > **Note** For addtional information and references, please check the [Appendix](http://dp.stmarytx.edu/wluo/Appendix.pdf) for this paper.
 
-> **Warning** Our code (both EMR and LMR methods) can run perfectly in UNIX-based systems (such as MacOS) since we pre-compiled the [JBIG-KIT compression source code](https://www.cl.cam.ac.uk/~mgk25/jbigkit/) to executable files. It will have some issues when running *the LMR method* in the Windows due to the source .c files are not compiled in our provided code. Overall, if the JBIG-KIT software can run successfully in your local machine, then our program should run seamlessly as well.
+> **Warning** Both of the EMR and LMR methods can run perfectly in UNIX-based systems (such as MacOS) since we pre-compiled the [JBIG-KIT compression source code](https://www.cl.cam.ac.uk/~mgk25/jbigkit/) to executable files. It will have some issues when running *the LMR method* in the Windows due to the source .c files are not compiled to .exe in the provided code. In short, if the JBIG-KIT software can be compiled and run in your local machine, then the LMR should run seamlessly as well. Moreover, the EMR-RDHEI method is not depending on any compression kit, thus it should run successfully without any issue.
 
 ### File structure
 
