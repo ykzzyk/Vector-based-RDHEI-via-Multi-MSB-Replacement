@@ -1,6 +1,6 @@
 # Vector-based RDHEI via Multi-MSB Replacement
 
-This is a project for IEEE TCSVT journal paper [Vector-based Efficient Data Hiding in Encrypted Images via Multi-MSB Replacement](https://ieeexplore.ieee.org/document/9796573/authors#authors).
+This is the source code for IEEE TCSVT journal paper [Vector-based Efficient Data Hiding in Encrypted Images via Multi-MSB Replacement](https://ieeexplore.ieee.org/document/9796573/authors#authors).
 
 ## Getting Started
 
